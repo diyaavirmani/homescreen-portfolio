@@ -21,7 +21,7 @@ Then open http://127.0.0.1:5173/. Opening `index.html` directly also works. Add 
 | Projects folder | Four project apps; each opens an App Store page whose icon links to the repo |
 | Work folder | Prewery and Sansoftech as Wallet passes, and Open Source: every pull request I've opened in other people's repos, live from GitHub |
 | Wins, Stack folders | Hackathon achievements and Settings-style skill lists |
-| Dock: Photos, Maps, Notes | Portrait and hobbies, New Delhi and VIPS-TC, and how I think about engineering |
+| Dock: Photos, Maps | My portrait with how I think about engineering and life away from the screen, and New Delhi and VIPS-TC |
 
 Folders open like they do on iOS: tap one to see its apps, tap an app for its page. Back (the in-phone back button, the arrow beside the phone, or Esc) goes up one level.
 

@@ -222,21 +222,10 @@ SCREENS.music.afterOpen = (root, isCancelled) => {
   tick();
 };
 
-SCREENS.notes = () => {
-  const today = nowInDelhi().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
-  const hobbies = ["The gym", "Books", "Fictional worlds", "Hobbies I'm picking back up"];
-  return `<div class="scr scr-notes">
-    ${statusBar("dark")}
-    <div class="nt-nav"><button class="nt-back js-back">${CHEVRON}Notes</button><span class="nt-icons">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="8" cy="12" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="16" cy="12" r="1.2" fill="currentColor"/></svg>
-    </span></div>
-    <div class="nt-date">${today}</div>
-    <h2 class="nt-title">The messy middle</h2>
-    <p>${APPS.notes.text.join(" ")}</p>
-    <h3>Away from the screen</h3>
-    <ul class="nt-list">${hobbies.map((h, i) => `<li class="${i < 3 ? "done" : ""}"><i></i>${h}</li>`).join("")}</ul>
-  </div>`;
+SCREENS.photos.afterOpen = (root) => {
+  const photo = root.querySelector(".ph-stage img");
+  if (!photo || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  Motion.animate(photo, { scale: [0.55, 1], opacity: [0, 1] }, { type: "spring", stiffness: 260, damping: 22, delay: 0.12 });
 };
 
 // ---------- Folder items ----------

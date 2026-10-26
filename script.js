@@ -60,7 +60,7 @@
           .join("")}
       </div>
       <div class="home-search"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="m11 11 3.5 3.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>Search</div>
-      <div class="dock">${["photos", "maps", "notes"].map((id) => appButton(id, "dock-app")).join("")}</div>
+      <div class="dock">${["photos", "maps"].map((id) => appButton(id, "dock-app")).join("")}</div>
     </div>`;
   }
 
@@ -95,7 +95,7 @@
 
   function appContentHTML(id) {
     const app = APPS[id];
-    return `<div class="content-header"><h1>${escapeHtml(app.name)}</h1></div>
+    return `<div class="content-header"><h1>${escapeHtml(app.heading || app.name)}</h1></div>
       <div class="content-body">
         <div class="app-content">${app.text.map((p) => `<p class="app-description">${p}</p>`).join("")}</div>
         <button class="back-button js-back" aria-label="Back to home">${BACK_ICON}</button>

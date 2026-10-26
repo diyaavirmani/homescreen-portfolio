@@ -96,14 +96,6 @@ const ICONS = {
        <path d="M37 12.5a7.5 7.5 0 0 1 7.5 7.5c0 5.6-7.5 13-7.5 13s-7.5-7.4-7.5-13a7.5 7.5 0 0 1 7.5-7.5z" fill="#ff3b30"/><circle cx="37" cy="20" r="2.8" fill="#fff"/>`,
       { flat: true },
     ),
-  notes: () =>
-    iconSvg(
-      ["#ffffff", "#f4f4f4"],
-      `<defs><linearGradient id="$ID-n" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe066"/><stop offset="1" stop-color="#ffc400"/></linearGradient></defs>
-       <rect width="60" height="16" fill="url(#$ID-n)"/><path d="M0 16h60" stroke="#e0a800" stroke-width="1"/>
-       <path d="M10 27h40M10 35.5h40M10 44h40" stroke="#d6d6db" stroke-width="1.6"/>
-       <g fill="#c9c9cf"><circle cx="10" cy="21" r="1"/><circle cx="14" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></g>`,
-    ),
 };
 
 // Markup for any icon: a drawn one by key, or a logo image on a coloured tile.

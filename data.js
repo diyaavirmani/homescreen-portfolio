@@ -62,7 +62,7 @@ const CONTRIBUTIONS_SNAPSHOT = {
 };
 
 // Single apps: the two widgets and the dock. `text` is shown beside the phone when the app
-// is open; each string is a paragraph.
+// is open, one string per paragraph, under `heading` (or the app name).
 const APPS = {
   github: {
     name: "GitHub",
@@ -83,8 +83,11 @@ const APPS = {
   photos: {
     name: "Photos",
     label: "Photos",
+    heading: "The messy middle",
     text: [
-      "That's me.",
+      "To me, an idea and a product are just two ends of the same rope, and everything in between is the part people rarely see.",
+      "The failed attempts, the rewrites, the late fixes, the 'this should work' moments that somehow don't, and the small breakthroughs that finally make it real.",
+      "That messy middle is what I enjoy most about engineering.",
       "When I'm not pushing commits, I'm at the gym, lost in a book, or somewhere in a fictional world I refuse to leave.",
       "Reconnecting with the hobbies I gave up. Turns out you don't have to choose.",
     ],
@@ -95,15 +98,6 @@ const APPS = {
     text: [
       `Based in New Delhi, where I'm doing my ${PROFILE.education.degree} at VIPS-TC, graduating in 2027.`,
       "The clock on this phone runs on my time, IST (UTC+5:30).",
-    ],
-  },
-  notes: {
-    name: "Notes",
-    label: "Notes",
-    text: [
-      "To me, an idea and a product are just two ends of the same rope, and everything in between is the part people rarely see.",
-      "The failed attempts, the rewrites, the late fixes, the 'this should work' moments that somehow don't, and the small breakthroughs that finally make it real.",
-      "That messy middle is what I enjoy most about engineering.",
     ],
   },
 };
