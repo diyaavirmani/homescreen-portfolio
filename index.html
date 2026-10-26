@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Diya Virmani</title>
+    <meta
+      name="description"
+      content="Diya Virmani, developer in New Delhi working on agentic systems, RAG pipelines and ML/DL architectures. B.Tech AI & DS at VIPS-TC, graduating 2027."
+    />
+    <meta name="theme-color" content="#313b4e" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Diya Virmani" />
+    <meta property="og:description" content="Developer in New Delhi building agentic systems, RAG pipelines and ML. Tap around my Home Screen." />
+    <meta property="og:image" content="assets/img/portrait.webp" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <link rel="preconnect" href="https://rsms.me/" crossorigin />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="preload" href="assets/img/portrait.webp" as="image" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="stage" id="stage">
+      <!-- Shown on narrow screens, where the typewriter column sits below the phone -->
+      <section class="mobile-intro" aria-label="About Diya">
+        <h1 class="intro-title">Diya Virmani</h1>
+        <div class="content-text js-static-intro">
+          <p>
+            I'm a developer based in New Delhi, studying AI &amp; Data Science at VIPS-TC. I like to work on agentic systems,
+            RAG pipelines, and study core ML/DL architectures.
+          </p>
+          <p>I built my portfolio as a Home Screen, so every app and folder opens up a piece of what I do.</p>
+          <p>Feel free to tap around or <a href="mailto:diyavirmani41@gmail.com">get in touch</a> and thanks for stopping by.</p>
+        </div>
+        <div class="social-icons js-socials"></div>
+      </section>
+
+      <div class="phone-container" id="phone">
+        <div class="phone-frame" id="phone-frame">
+          <div class="sheet-bg"></div>
+          <div class="phone-screen" id="phone-screen"></div>
+          <div class="sheet" id="sheet-a" aria-hidden="true"></div>
+          <div class="sheet" id="sheet-b" aria-hidden="true"></div>
+          <div class="dynamic-island"></div>
+          <div class="phone-edge"></div>
+        </div>
+      </div>
+
+      <section class="content-area is-home" id="content-area">
+        <div class="content-area-inner" id="content-inner">
+          <div class="content-header"><h1 id="intro-name">Diya Virmani</h1></div>
+          <div class="content-body">
+            <div class="content-text">
+              <p id="intro-p1"></p>
+              <p id="intro-p2"></p>
+              <p id="intro-p3"></p>
+            </div>
+            <div class="social-icons intro-social-icons js-socials"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <noscript>
+      <style>
+        .phone-container, .content-area { display: none !important; }
+        .mobile-intro { display: block !important; }
+      </style>
+    </noscript>
+
+    <script src="vendor/motion.js"></script>
+    <script src="data.js"></script>
+    <script src="icons.js"></script>
+    <script src="screens.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
