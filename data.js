@@ -61,14 +61,14 @@ const CONTRIBUTIONS_SNAPSHOT = {
     "000000000000000000000000000000000000000000000000000000000000000000001101100000011001111100111111111000000000000000000004000111111112200111100012000000110001110122111141000000000010000122222222211111211102111111110110001000111000010000011010201000000000000000000001100100000001011110010001001000400100300001011000000000001001002012101001010102234101112222132223112100",
 };
 
-// Single apps: the two widgets, the app row and the dock. `text` is shown beside the phone
-// when the app is open; blank lines separate paragraphs.
+// Single apps: the two widgets and the dock. `text` is shown beside the phone when the app
+// is open; each string is a paragraph.
 const APPS = {
   github: {
     name: "GitHub",
     text: [
       "Most of what I build lives here, and all four projects in the Projects folder are public.",
-      `Lately that includes 6+ merged PRs into <a href="https://github.com/Untrivial-ai/agent-orchestrator" target="_blank" rel="noopener">Agent Orchestrator</a>, a production AI orchestration desktop app for macOS Intel with real users.`,
+      "Lately that's mostly open source: pull requests to Kestra, Nanocoder and Agent Orchestrator. The Open Source app in the Work folder lists them.",
       `Come say hi at <a href="${PROFILE.github}" target="_blank" rel="noopener">github.com/${PROFILE.githubUsername}</a>.`,
     ],
   },
@@ -97,38 +97,6 @@ const APPS = {
       "The clock on this phone runs on my time, IST (UTC+5:30).",
     ],
   },
-  terminal: {
-    name: "Terminal",
-    label: "Terminal",
-    text: [
-      "Right now I'm learning backend engineering, from first principles.",
-      "The quote is Ada Lovelace's, the world's first computer programmer. It's how studying feels to me too.",
-    ],
-  },
-  resume: {
-    name: "Résumé",
-    label: "Résumé",
-    text: [
-      "Education, experience, projects and hackathons, all on one page.",
-      `<a href="${PROFILE.resume}" target="_blank" rel="noopener">Open the PDF</a> or download it for later.`,
-    ],
-  },
-  mail: {
-    name: "Mail",
-    label: "Mail",
-    text: [
-      "Email is the best way to reach me, whether it's about a role, a project or a hackathon team.",
-      `<a href="mailto:${PROFILE.email}">${PROFILE.email}</a>`,
-    ],
-  },
-  linkedin: {
-    name: "LinkedIn",
-    label: "LinkedIn",
-    text: [
-      "The professional version of all this: experience, education and the occasional update.",
-      `<a href="${PROFILE.linkedin}" target="_blank" rel="noopener">Connect with me on LinkedIn</a>.`,
-    ],
-  },
   notes: {
     name: "Notes",
     label: "Notes",
@@ -140,6 +108,60 @@ const APPS = {
   },
 };
 
+// Pull requests Diya opened in other people's repositories, newest first:
+// [title, repo, PR number, state, opened on]. The Open Source page refreshes this from the
+// GitHub search API when it can; this snapshot (26 Oct 2026) is the fallback.
+const OPEN_SOURCE = {
+  query: `is:pr author:${PROFILE.githubUsername} -user:${PROFILE.githubUsername}`,
+  prs: [
+    ["fix(tools): refuse to edit a file that isn't valid UTF-8 (#1854)", "Nano-Collective/nanocoder", "1866", "open", "2026-10-20"],
+    ["fix(mcp): don't let an MCP tool replace or remove a built-in (#1853)", "Nano-Collective/nanocoder", "1863", "open", "2026-10-20"],
+    ["fix(issue-triage): retry a rate-limited run instead of failing the step", "Nano-Collective/.github", "9", "open", "2026-10-20"],
+    ["fix(worker): fail a WorkingDirectory whose postExecuteTasks fails", "kestra-io/kestra", "21431", "open", "2026-10-19"],
+    ["fix(s3): pass sessionToken to the DELETE and MOVE actions", "kestra-io/plugin-aws", "843", "open", "2026-10-19"],
+    ["fix(bash): stop execute_bash commands before reporting them stopped or exiting (#1833)", "Nano-Collective/nanocoder", "1851", "merged", "2026-10-19"],
+    ["fix(mongodb): fail Bulk on a line that isn't valid UTF-8", "kestra-io/plugin-mongodb", "182", "open", "2026-10-19"],
+    ["fix(s3): retry objects whose trigger action fails instead of skipping them", "kestra-io/plugin-aws", "841", "open", "2026-10-19"],
+    ["fix(plain): report a provider failure instead of losing the run (#1835)", "Nano-Collective/nanocoder", "1850", "merged", "2026-10-19"],
+    ["fix(flows): concurrent flow saves losing edits and undoing a delete", "kestra-io/kestra", "21361", "merged", "2026-10-19"],
+    ["fix(tools): compare a symlink's target in the read_file repeat-read check (#1834)", "Nano-Collective/nanocoder", "1845", "merged", "2026-10-19"],
+    ["fix(sqs): store consumed messages before deleting them", "kestra-io/plugin-aws", "838", "open", "2026-10-19"],
+    ["fix(browser): enable Touch ID passkeys for provisioned macOS builds", "OrchestratorInc/agent-orchestrator", "6887", "open", "2026-10-17"],
+    ["fix(mongodb): insert documents whose last field is a nested _id", "kestra-io/plugin-mongodb", "168", "merged", "2026-10-16"],
+    ["fix(mongodb): require a filter for Delete with DELETE_MANY", "kestra-io/plugin-mongodb", "167", "merged", "2026-10-16"],
+    ["fix(plain): suggest only approval fixes that would change the result (#1740)", "Nano-Collective/nanocoder", "1799", "open", "2026-10-16"],
+    ["fix(mongodb): keep the record's own id in Load with idKey _id", "kestra-io/plugin-mongodb", "164", "merged", "2026-10-16"],
+    ["fix(mongodb): deliver tied watermark documents whose _id has another BSON type", "kestra-io/plugin-mongodb", "163", "merged", "2026-10-16"],
+    ["fix(session): keep saved sessions' artifacts in the startup sweep when autosave is off", "Nano-Collective/nanocoder", "1786", "merged", "2026-10-15"],
+    ["fix(mongodb): report what Load and Bulk applied when a write fails", "kestra-io/plugin-mongodb", "159", "merged", "2026-10-14"],
+    ["test(core): stop LockServiceTest assuming it holds the only lock", "kestra-io/kestra", "20861", "merged", "2026-10-13"],
+    ["test(mongodb): run flow tests against the Testcontainers database", "kestra-io/plugin-mongodb", "157", "merged", "2026-10-13"],
+    ["feat(mongodb): add watermarkField to Trigger to deliver each document once", "kestra-io/plugin-mongodb", "156", "merged", "2026-10-13"],
+    ["fix(mongodb): count Bulk upserts and stop reading after a failed write", "kestra-io/plugin-mongodb", "153", "merged", "2026-10-12"],
+    ["fix(session): lock the session index across processes and reconcile it at startup", "Nano-Collective/nanocoder", "1732", "merged", "2026-10-12"],
+    ["fix(mongodb): map every BSON type when reading documents", "kestra-io/plugin-mongodb", "152", "merged", "2026-10-12"],
+    ["fix(worker): release a WorkingDirectory's last subtask result after its outputs are written", "kestra-io/kestra", "20766", "open", "2026-10-12"],
+    ["fix(mongodb): stop in-flight operations when a task is killed", "kestra-io/plugin-mongodb", "151", "merged", "2026-10-12"],
+    ["fix(acp): run each session's tools in the cwd from session/new", "Nano-Collective/nanocoder", "1731", "merged", "2026-10-12"],
+    ["fix(desktop): back off when the daemon refuses the browser runtime link", "OrchestratorInc/agent-orchestrator", "6565", "merged", "2026-10-11"],
+    ["fix(chat): keep orchestrator history and queued prompts on the project conversation", "OrchestratorInc/agent-orchestrator", "6562", "merged", "2026-10-11"],
+    ["fix(tools): prompt before file_op deletes or overwrites in auto-accept", "Nano-Collective/nanocoder", "1703", "merged", "2026-10-11"],
+    ["fix(mongodb): report non-ObjectId _id in InsertOne output", "kestra-io/plugin-mongodb", "145", "merged", "2026-10-09"],
+    ["fix(executions): keep Flow-triggered executions out of the kill cascade", "kestra-io/kestra", "20562", "merged", "2026-10-08"],
+    ["fix(chat): lazily restore idle controllers after daemon restart", "OrchestratorInc/agent-orchestrator", "6409", "open", "2026-10-08"],
+    ["fix(systeminstall): let Cursor's first post-install version probe finish (#5887)", "OrchestratorInc/agent-orchestrator", "6289", "merged", "2026-10-05"],
+    ["fix(mongodb): unwrap standard insertOne document in Bulk", "kestra-io/plugin-mongodb", "143", "merged", "2026-10-05"],
+    ["fix(mongodb): preserve Extended JSON BSON types in Load", "kestra-io/plugin-mongodb", "142", "merged", "2026-10-05"],
+    ["fix(chat): guard IME Enter and persist send-key preference", "OrchestratorInc/agent-orchestrator", "6242", "open", "2026-10-04"],
+    ["feat: start interactive sessions in PR worktrees", "Nano-Collective/nanocoder", "1550", "merged", "2026-09-30"],
+    ["test(#5038): add opt-in sidebar cache diagnostics", "OrchestratorInc/agent-orchestrator", "6053", "merged", "2026-09-29"],
+    ["fix(tmux): re-stage bundled tmux when content changes without app ver…", "OrchestratorInc/agent-orchestrator", "5891", "open", "2026-09-25"],
+    ["fix/#5757(chat): recover Claude ACP turns missing terminal events", "OrchestratorInc/agent-orchestrator", "5889", "open", "2026-09-25"],
+    ["fix/5758", "OrchestratorInc/agent-orchestrator", "5799", "merged", "2026-09-23"],
+    ["fix/5320", "OrchestratorInc/agent-orchestrator", "5798", "closed", "2026-09-23"]
+  ],
+};
+
 // Folders: each item gets an icon, a line of text beside the phone and its own screen.
 const FOLDERS = {
   projects: {
@@ -147,6 +169,7 @@ const FOLDERS = {
     items: [
       {
         name: "Scam Bait AI",
+        label: "Scam Bait",
         icon: "scambait",
         href: "https://github.com/diyaavirmani/SCAM-BAIT",
         area: "AI Security · Agentic AI",
@@ -167,6 +190,7 @@ const FOLDERS = {
       },
       {
         name: "FLOWITS",
+        label: "FLOWITS",
         icon: "flowits",
         href: "https://github.com/diyaavirmani/Flowits",
         area: "ML · Traffic Intelligence",
@@ -187,6 +211,7 @@ const FOLDERS = {
       },
       {
         name: "Telecom Standards Assistant",
+        label: "Telecom",
         icon: "telecom",
         href: "https://github.com/diyaavirmani/Telecom-Standards-Assistant-",
         area: "RAG · Telecom Standards",
@@ -207,6 +232,7 @@ const FOLDERS = {
       },
       {
         name: "Pancake",
+        label: "Pancake",
         icon: "pancake",
         href: "https://github.com/diyaavirmani/probable-pancake",
         area: "Agents · Developer Tools",
@@ -231,19 +257,8 @@ const FOLDERS = {
     name: "Work",
     items: [
       {
-        name: "Agent Orchestrator",
-        logo: "assets/logos/agent-orchestrator.png",
-        logoBg: "#0d1117",
-        role: "Open Source Contributor",
-        dates: "2026 – Present",
-        place: "Open source",
-        href: "https://github.com/Untrivial-ai/agent-orchestrator",
-        passColor: ["#1b2a44", "#0d1117"],
-        description: "merged 6+ of my PRs into its production AI orchestration desktop app for macOS Intel, which has real users.",
-        items: ["6+ PRs merged into a production AI orchestration desktop app for macOS Intel, with real users."],
-      },
-      {
         name: "Prewery",
+        label: "Prewery",
         logo: "assets/logos/prewery.png",
         logoBg: "#ffffff",
         role: "Software Development Intern",
@@ -260,6 +275,7 @@ const FOLDERS = {
       },
       {
         name: "Sansoftech",
+        label: "Sansoftech",
         logo: "assets/logos/sansoftech.png",
         logoBg: "#ffffff",
         role: "Generative AI & Prompt Engineering Intern",
@@ -273,27 +289,24 @@ const FOLDERS = {
         ],
       },
       {
-        name: "E-Cell VIPS",
-        icon: "ecell",
-        role: "Head of Operations",
-        dates: "2023 – 2026",
-        place: "Entrepreneurship Cell, VIPS",
-        passColor: ["#f0703a", "#c2410c"],
-        description:
-          "is where I ran operations as Head of Operations: event logistics, sponsorships, partnerships and execution teams of 50+ people.",
-        items: [
-          "Spearheaded operations, event logistics and institutional partnerships across flagship tech and entrepreneurship summits.",
-          "Led corporate sponsorship outreach and coordinated cross-functional teams of 50+ members.",
-        ],
+        name: "Open Source",
+        label: "Open Source",
+        icon: "opensource",
+        kind: "opensource",
+        role: "Open Source Contributor",
+        dates: "2026 – Present",
+        description: "is where I contribute to other people's projects. Every pull request is listed, newest first, straight from GitHub.",
       },
     ],
   },
   wins: {
     name: "Wins",
     items: [
-      { name: "Hermes Buildathon", icon: "win-hermes", badge: "TOP 5", result: "Top 5 Finalist", description: "Top 5 Finalist." },
+      { name: "Hermes Buildathon",
+        label: "Hermes", icon: "win-hermes", badge: "TOP 5", result: "Top 5 Finalist", description: "Top 5 Finalist." },
       {
         name: "OpenAI Codex Community Hackathon",
+        label: "Codex",
         icon: "win-codex",
         badge: "TOP 6",
         result: "Top 6 Finalist among all participating teams",
@@ -301,14 +314,17 @@ const FOLDERS = {
       },
       {
         name: "GUVI India AI Impact Buildathon",
+        label: "GUVI",
         icon: "win-guvi",
         badge: "TOP 2%",
         result: "Top 2% Finalist of national submissions",
         description: "Top 2% Finalist of national submissions.",
       },
-      { name: "Hacktivate", icon: "win-hacktivate", badge: "2ND", result: "2nd Place overall", description: "2nd Place overall." },
+      { name: "Hacktivate",
+        label: "Hacktivate", icon: "win-hacktivate", badge: "2ND", result: "2nd Place overall", description: "2nd Place overall." },
       {
         name: "FrostByte Hack",
+        label: "FrostByte",
         icon: "win-frostbyte",
         badge: "WIN",
         result: "Theme Winner ($100 prize)",
@@ -321,26 +337,26 @@ const FOLDERS = {
     items: [
       {
         name: "Technology",
+        label: "Technology",
         icon: "stack-tech",
         skills: ["Machine Learning", "Deep Learning", "Computer Vision", "NLP", "Generative AI", "Large Language Models", "RAG", "Agentic AI", "Prompt Engineering", "Knowledge Engineering"],
       },
       {
         name: "Data Science",
+        label: "Data Science",
         icon: "stack-data",
         skills: ["Exploratory Data Analysis", "Data Analytics", "Data Quality", "Data Cleaning", "Data Preprocessing", "Feature Engineering", "Model Training", "Model Evaluation", "Model Validation", "Benchmarking", "Data Pipelines", "Data Visualization"],
       },
       {
         name: "Libraries & Frameworks",
+        label: "Libraries",
         icon: "stack-libs",
         skills: ["PyTorch", "TensorFlow", "scikit-learn", "OpenCV", "YOLO", "Hugging Face", "LangChain", "LangGraph", "FastAPI", "Streamlit", "SQLAlchemy"],
       },
-      { name: "Data & Automation", icon: "stack-db", skills: ["SQL", "SQLite", "Pinecone", "n8n"] },
-      { name: "Development & Deployment", icon: "stack-deploy", skills: ["Python", "REST APIs", "Docker", "AWS", "Render"] },
+      { name: "Data & Automation",
+        label: "Data Tools", icon: "stack-db", skills: ["SQL", "SQLite", "Pinecone", "n8n"] },
+      { name: "Development & Deployment",
+        label: "Deploy", icon: "stack-deploy", skills: ["Python", "REST APIs", "Docker", "AWS", "Render"] },
     ],
   },
-};
-
-const QUOTE = {
-  text: "The more I study, the more insatiable do I feel my genius for it to be.",
-  author: "Ada Lovelace",
 };

@@ -15,8 +15,9 @@
   const SHEET_OFFSET = 660;
   const INTRO_KEY = "dv-intro-seen";
 
-  // open: null | { type: "app", id } | { type: "folder", id, index }
-  const state = { open: null, active: 0, animating: false, run: 0 };
+  // folder: id of the folder open on the Home Screen, or null.
+  // sheet: the screen slid up over it: null | { type: "app", id } | { type: "item", folder, index }
+  const state = { folder: null, sheet: null, active: 0, animating: false, run: 0 };
 
   const BACK_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
@@ -54,13 +55,23 @@
       <div class="home-grid">
         <button class="hit widget" data-app="github" aria-label="Open GitHub">${githubWidget()}<span class="label">GitHub</span></button>
         <button class="hit widget" data-app="music" aria-label="Open ${escapeHtml(MUSIC.title)}">${musicWidget()}<span class="label">Music</span></button>
-        ${["photos", "maps", "terminal", "resume"].map((id) => appButton(id)).join("")}
         ${Object.entries(FOLDERS)
           .map(([id, folder]) => `<button class="hit" data-folder="${id}" aria-label="Open the ${folder.name} folder">${folderIcon(folder)}<span class="label">${folder.name}</span></button>`)
           .join("")}
       </div>
       <div class="home-search"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="m11 11 3.5 3.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>Search</div>
-      <div class="dock">${["mail", "linkedin", "notes"].map((id) => appButton(id, "dock-app")).join("")}</div>
+      <div class="dock">${["photos", "maps", "notes"].map((id) => appButton(id, "dock-app")).join("")}</div>
+    </div>`;
+  }
+
+  // An open folder, iOS style: the Home Screen blurs and the folder's apps sit on a glass panel.
+  function folderOverlayHTML(id) {
+    const folder = FOLDERS[id];
+    return `<div class="folder-overlay" id="folder-overlay" data-folder="${id}">
+      <div class="fo-title">${folder.name}</div>
+      <div class="fo-panel">${folder.items
+        .map((item, i) => `<button class="hit fo-app" data-index="${i}" aria-label="Open ${escapeHtml(item.name)}">${iconHtml(item)}<span class="label">${escapeHtml(item.label)}</span></button>`)
+        .join("")}</div>
     </div>`;
   }
 
@@ -110,10 +121,10 @@
   function folderContentHTML(folderId) {
     const folder = FOLDERS[folderId];
     return `<div class="folder-container" data-folder="${folderId}">
-      <div class="content-header"><h1>${folder.name}</h1><button class="back-button js-back" aria-label="Back to home">${BACK_ICON}</button></div>
+      <div class="content-header"><h1>${folder.name}</h1><button class="back-button js-back" aria-label="Back">${BACK_ICON}</button></div>
       <div class="folder-scroll-area">${folder.items
         .map(
-          (item, i) => `<div class="folder-app-item${i === 0 ? " selected" : ""}" role="button" tabindex="0" aria-pressed="${i === 0}" data-index="${i}">
+          (item, i) => `<div class="folder-app-item" role="button" tabindex="0" aria-pressed="false" data-index="${i}">
             ${iconHtml(item)}<p class="folder-app-description">${folderItemText(folderId, item)}</p>
           </div>`,
         )
@@ -202,11 +213,11 @@
       const up = () => !reducedMotion && Motion.animate(item, { scale: 1 }, press);
       item.addEventListener("pointerdown", down);
       ["pointerup", "pointerleave", "pointercancel"].forEach((t) => item.addEventListener(t, up));
-      item.addEventListener("click", () => selectFolderItem(Number(item.dataset.index)));
+      item.addEventListener("click", () => openItem(Number(item.dataset.index)));
       item.addEventListener("keydown", (e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          selectFolderItem(Number(item.dataset.index));
+          openItem(Number(item.dataset.index));
         }
       });
     });
@@ -214,11 +225,11 @@
 
   // ---------- Sheets ----------
 
-  function mountScreen(sheet, html, afterOpen) {
+  function mountScreen(sheet, html, afterOpen, ...args) {
     const run = ++state.run;
     sheet.innerHTML = html;
     sheet.setAttribute("aria-hidden", "false");
-    if (afterOpen) afterOpen(sheet, () => run !== state.run || !sheet.classList.contains("is-open"));
+    if (afterOpen) afterOpen(sheet, () => run !== state.run || !sheet.classList.contains("is-open"), ...args);
   }
 
   function clearSheet(sheet) {
@@ -229,12 +240,12 @@
     sheet.style.opacity = "";
   }
 
-  function presentSheet(html, afterOpen) {
+  function presentSheet(html, afterOpen, ...args) {
     state.animating = true;
     const sheet = sheets[state.active];
     clearSheet(sheets[1 - state.active]);
     sheet.classList.add("is-open", "is-front");
-    mountScreen(sheet, html, afterOpen);
+    mountScreen(sheet, html, afterOpen, ...args);
     clearHover();
     Motion.animate(phoneScreen, { scale: [1, 0.92] }, SPRING);
     Motion.animate(sheet, { y: [SHEET_OFFSET, 0] }, SPRING).finished.then(() => {
@@ -243,42 +254,92 @@
   }
 
   function openApp(id) {
-    if (state.animating || state.open || !SCREENS[id]) return;
-    state.open = { type: "app", id };
+    if (state.animating || state.sheet || state.folder || !SCREENS[id]) return;
+    state.sheet = { type: "app", id };
     presentSheet(SCREENS[id](), SCREENS[id].afterOpen);
     swapContent(appContentHTML(id));
     revealContentOnPhones();
   }
 
-  function openFolder(id) {
-    if (state.animating || state.open || !FOLDERS[id]) return;
-    state.open = { type: "folder", id, index: 0 };
-    presentSheet(FOLDER_SCREENS[id](FOLDERS[id].items[0], 0));
+  function openFolder(id, button) {
+    if (state.animating || state.sheet || state.folder || !FOLDERS[id]) return;
+    state.folder = id;
+    clearHover();
+    phoneScreen.insertAdjacentHTML("beforeend", folderOverlayHTML(id));
+    const overlay = document.getElementById("folder-overlay");
+    const panel = overlay.querySelector(".fo-panel");
+
+    // Grow the panel out of the folder icon that was tapped.
+    const from = button.querySelector(".icon").getBoundingClientRect();
+    const box = panel.getBoundingClientRect();
+    const ratio = box.width / panel.offsetWidth || 1;
+    panel.style.transformOrigin = `${(from.left + from.width / 2 - box.left) / ratio}px ${(from.top + from.height / 2 - box.top) / ratio}px`;
+
+    if (!reducedMotion) {
+      state.animating = true;
+      Motion.animate(overlay, { opacity: [0, 1] }, { duration: 0.22, ease: "easeOut" });
+      Motion.animate(panel, { scale: [0.2, 1] }, { type: "spring", stiffness: 380, damping: 32 }).finished.then(() => {
+        state.animating = false;
+      });
+    }
     swapContent(folderContentHTML(id));
-    revealContentOnPhones();
   }
 
-  function selectFolderItem(index) {
-    const open = state.open;
-    if (state.animating || open?.type !== "folder" || open.index === index) return;
-    const item = FOLDERS[open.id].items[index];
-    if (!item) return;
+  function closeFolder() {
+    const overlay = document.getElementById("folder-overlay");
+    if (!state.folder || state.sheet || state.animating || !overlay) return;
+    state.folder = null;
+    const done = () => {
+      overlay.remove();
+      pickupHover();
+    };
+    if (reducedMotion) {
+      done();
+    } else {
+      state.animating = true;
+      Motion.animate(overlay.querySelector(".fo-panel"), { scale: [1, 0.2] }, { duration: 0.22, ease: "easeIn" });
+      Motion.animate(overlay, { opacity: [1, 0] }, { duration: 0.22, ease: "easeIn" }).finished.then(() => {
+        done();
+        state.animating = false;
+      });
+    }
+    swapContent(homeContentHTML(), { home: true });
+  }
 
-    state.animating = true;
-    open.index = index;
+  function markSelected(index) {
     contentInner.querySelectorAll(".folder-app-item").forEach((el, i) => {
       el.classList.toggle("selected", i === index);
       el.setAttribute("aria-pressed", String(i === index));
     });
+  }
 
+  // Open one app from the open folder: slide its page up, or crossfade if a page is showing.
+  function openItem(index) {
+    const folderId = state.folder;
+    const item = folderId && FOLDERS[folderId].items[index];
+    if (state.animating || !item) return;
+    const render = FOLDER_SCREENS[folderId];
+    markSelected(index);
+
+    if (!state.sheet) {
+      state.sheet = { type: "item", folder: folderId, index };
+      presentSheet(render(item, index), render.afterOpen, item);
+      revealPhoneOnPhones();
+      return;
+    }
+    if (state.sheet.index === index) return;
+
+    state.animating = true;
+    state.sheet.index = index;
     const current = sheets[state.active];
     const next = sheets[1 - state.active];
     next.style.transform = "translateY(0px)";
     next.style.opacity = "0";
     next.classList.add("is-open", "is-front");
     current.classList.remove("is-front");
-    mountScreen(next, FOLDER_SCREENS[open.id](item, index));
+    mountScreen(next, render(item, index), render.afterOpen, item);
     state.active = 1 - state.active;
+    revealPhoneOnPhones();
 
     Motion.animate(next, { opacity: [0, 1] }, { duration: reducedMotion ? 0 : 0.25, ease: "easeInOut" }).finished.then(() => {
       clearSheet(current);
@@ -287,9 +348,9 @@
   }
 
   function closeSheet() {
-    if (!state.open || state.animating) return;
+    if (!state.sheet || state.animating) return;
     state.animating = true;
-    state.open = null;
+    state.sheet = null;
     const sheet = sheets[state.active];
     clearSheet(sheets[1 - state.active]);
     Motion.animate(phoneScreen, { scale: [0.92, 1] }, SPRING);
@@ -299,7 +360,22 @@
       state.animating = false;
       pickupHover();
     });
-    swapContent(homeContentHTML(), { home: true });
+    if (state.folder) markSelected(-1);
+    else swapContent(homeContentHTML(), { home: true });
+  }
+
+  // One level back: a page closes to its folder, a folder closes to the Home Screen.
+  function goBack() {
+    if (state.sheet) closeSheet();
+    else if (state.folder) closeFolder();
+  }
+
+  // On phones the folder list sits under the phone; bring the phone back into view when a
+  // list item opens a page.
+  function revealPhoneOnPhones() {
+    if (!isStacked()) return;
+    const top = phone.getBoundingClientRect().top;
+    if (top < -120) window.scrollBy({ top: top - 16, behavior: reducedMotion ? "auto" : "smooth" });
   }
 
   // ---------- Hover dimming (the non-hovered icons fade back) ----------
@@ -308,20 +384,20 @@
   document.addEventListener("mousemove", (e) => (lastPointer = { x: e.clientX, y: e.clientY }), { passive: true });
 
   function applyHover(target) {
-    const home = document.getElementById("home");
-    home.classList.add("is-hovering");
-    home.querySelectorAll(".hit").forEach((el) => el.classList.toggle("is-hover", el === target));
+    const group = target.closest(".fo-panel, .home");
+    clearHover(group);
+    group.classList.add("is-hovering");
+    group.querySelectorAll(".hit").forEach((el) => el.classList.toggle("is-hover", el === target));
   }
 
-  function clearHover() {
-    const home = document.getElementById("home");
-    home?.classList.remove("is-hovering");
-    home?.querySelectorAll(".is-hover").forEach((el) => el.classList.remove("is-hover"));
+  function clearHover(except) {
+    phoneScreen.querySelectorAll(".is-hovering").forEach((el) => el !== except && el.classList.remove("is-hovering"));
+    phoneScreen.querySelectorAll(".is-hover").forEach((el) => el.classList.remove("is-hover"));
   }
 
   function pickupHover() {
     const el = document.elementFromPoint(lastPointer.x, lastPointer.y)?.closest(".hit");
-    if (el && canHover()) applyHover(el);
+    if (el && canHover() && phoneScreen.contains(el)) applyHover(el);
   }
 
   function shakePhone() {
@@ -332,20 +408,22 @@
   function attachEvents() {
     phoneScreen.addEventListener("click", (e) => {
       const hit = e.target.closest(".hit");
-      if (!hit) return;
-      if (hit.dataset.app) openApp(hit.dataset.app);
-      if (hit.dataset.folder) openFolder(hit.dataset.folder);
+      if (hit?.classList.contains("fo-app")) return openItem(Number(hit.dataset.index));
+      if (hit?.dataset.app) return openApp(hit.dataset.app);
+      if (hit?.dataset.folder) return openFolder(hit.dataset.folder, hit);
+      // Tapping the blurred area around an open folder closes it, as on iOS.
+      if (e.target.closest(".folder-overlay")) closeFolder();
     });
 
     phoneScreen.addEventListener("mouseover", (e) => {
-      if (!canHover() || state.open) return;
+      if (!canHover() || state.sheet) return;
       const hit = e.target.closest(".hit");
       if (hit) applyHover(hit);
       else clearHover();
     });
     phoneScreen.addEventListener("mouseleave", clearHover);
 
-    // Tapping an open screen dismisses it, unless the tap was on one of its links.
+    // Tapping an open screen goes back, unless the tap was on one of its links or buttons.
     sheets.forEach((sheet) =>
       sheet.addEventListener("click", (e) => {
         if (e.target.closest("a, button")) return;
@@ -357,7 +435,7 @@
     phone.addEventListener("mouseleave", () => !reducedMotion && canHover() && Motion.animate(phone, { scale: 1 }, { duration: 0.15, ease: "easeOut" }));
 
     document.addEventListener("click", (e) => {
-      if (e.target.closest(".js-back")) closeSheet();
+      if (e.target.closest(".js-back")) goBack();
       if (e.target.closest(".tap-around-link")) {
         e.preventDefault();
         shakePhone();
@@ -372,7 +450,7 @@
     );
 
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeSheet();
+      if (e.key === "Escape") goBack();
     });
 
     window.addEventListener("resize", fitToViewport);

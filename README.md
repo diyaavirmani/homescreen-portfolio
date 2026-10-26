@@ -18,9 +18,12 @@ Then open http://127.0.0.1:5173/. Opening `index.html` directly also works. Add 
 | --- | --- |
 | GitHub widget | Profile, live contribution graph, and public repos |
 | Music widget | Now Playing: Style (Taylor's Version) |
-| Photos, Maps, Terminal, Résumé | Portrait and hobbies, New Delhi and VIPS-TC, what I'm learning, the PDF |
-| Projects, Work, Wins, Stack folders | App Store pages, Wallet passes, achievements, Settings-style skill lists |
-| Dock: Mail, LinkedIn, Notes | Contact, LinkedIn, and how I think about engineering |
+| Projects folder | Four project apps; each opens an App Store page whose icon links to the repo |
+| Work folder | Prewery and Sansoftech as Wallet passes, and Open Source: every pull request I've opened in other people's repos, live from GitHub |
+| Wins, Stack folders | Hackathon achievements and Settings-style skill lists |
+| Dock: Photos, Maps, Notes | Portrait and hobbies, New Delhi and VIPS-TC, and how I think about engineering |
+
+Folders open like they do on iOS: tap one to see its apps, tap an app for its page. Back (the in-phone back button, the arrow beside the phone, or Esc) goes up one level.
 
 ## Editing
 
@@ -29,7 +32,7 @@ Then open http://127.0.0.1:5173/. Opening `index.html` directly also works. Add 
 - **Phone screens:** `screens.js` has one renderer per app and per folder type.
 - **Behaviour:** `script.js`. **Styles:** `style.css` (the colours are the variables at the top).
 
-The contribution graph loads live from a public contributions API and falls back to the snapshot in `data.js` if that fails.
+The contribution graph and the pull request list load live (a public contributions API and the GitHub search API) and fall back to the snapshots in `data.js` if that fails.
 
 ## Deploying
 
@@ -37,4 +40,4 @@ The site is static, so GitHub Pages, Vercel or Netlify can serve the repository 
 
 ## Credits
 
-Design and interaction pattern after [Raffi Chilingaryan's site](https://www.raffi.zip/). The 1989 (Taylor's Version) cover belongs to its rights holders; the GitHub and LinkedIn marks come from [Simple Icons](https://simpleicons.org) (CC0) and belong to their companies.
+Design and interaction pattern after [Raffi Chilingaryan's site](https://www.raffi.zip/). The 1989 (Taylor's Version) cover belongs to its rights holders; the Open Source page's pull request list follows the design of [srbh.site](https://srbh.site); the GitHub and LinkedIn marks come from [Simple Icons](https://simpleicons.org) (CC0) and belong to their companies.

@@ -47,12 +47,10 @@ const ICONS = {
        <path d="M15 22.5c0-1.5 1-2.5 2.5-2.5h25c1.5 0 2.5 1 2.5 2.5 0 1.2-.8 1.8-1.6 2v4.5a1.4 1.4 0 0 1-2.8 0V25H35v6a1.5 1.5 0 0 1-3 0v-6h-9v3a1.4 1.4 0 0 1-2.8 0v-3h-2.6c-1.5 0-2.6-1-2.6-2.5z" fill="#8a4b12" opacity=".92"/>
        <rect x="25.5" y="14.5" width="9" height="6.5" rx="1.6" fill="#fff4bf"/>`,
     ),
-  ecell: () =>
+  opensource: () =>
     iconSvg(
-      ["#ff9b5c", "#e2530d"],
-      `<path d="M30 9c7.5 5 10.5 13.5 9.2 22.5L35.5 38h-11l-3.7-6.5C19.5 22.5 22.5 14 30 9z" fill="#fff"/>
-       <circle cx="30" cy="23" r="3.8" fill="#e2530d"/><path d="M21.6 32.5 16 41l7.5-1.2M38.4 32.5 44 41l-7.5-1.2" fill="#fff"/>
-       <path d="M25.5 40.5c0 4.5 2 7.5 4.5 10 2.5-2.5 4.5-5.5 4.5-10z" fill="#ffd60a"/>`,
+      ["#2f3640", "#0d1117"],
+      `<g transform="translate(5 5) scale(2.08)" stroke="#b392f0" stroke-width="1.65" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/></g>`,
     ),
   "win-hermes": () => iconSvg(["#ff9445", "#e0502a"], medalGlyph("5")),
   "win-codex": () => iconSvg(["#33343a", "#0b0b0d"], medalGlyph("6")),
@@ -96,30 +94,6 @@ const ICONS = {
       `<path d="M0 0h25v21H0z" fill="#bfe3ad"/><path d="M41 60c0-15 6-24 19-31v31z" fill="#8fcaf6"/>
        <path d="M-2 43 62 17" stroke="#fff" stroke-width="7"/><path d="M17-2 31 62" stroke="#ffcf4d" stroke-width="5.5"/>
        <path d="M37 12.5a7.5 7.5 0 0 1 7.5 7.5c0 5.6-7.5 13-7.5 13s-7.5-7.4-7.5-13a7.5 7.5 0 0 1 7.5-7.5z" fill="#ff3b30"/><circle cx="37" cy="20" r="2.8" fill="#fff"/>`,
-      { flat: true },
-    ),
-  terminal: () =>
-    iconSvg(
-      ["#3a3a3c", "#0b0b0c"],
-      `<rect x="7" y="9" width="46" height="42" rx="5" fill="none" stroke="#5a5a5e" stroke-width="1.4"/><path d="M16 23l8 7-8 7" ${S}/><rect x="28" y="35" width="14" height="3.6" rx="1.8" fill="#fff"/>`,
-    ),
-  resume: () =>
-    iconSvg(
-      ["#ffffff", "#e9e9ee"],
-      `<path d="M18 9h17l9 9v31a3 3 0 0 1-3 3H18a3 3 0 0 1-3-3V12a3 3 0 0 1 3-3z" fill="#fff" stroke="#cfd0d6" stroke-width="1.4"/>
-       <path d="M35 9v9h9" fill="#eef0f4" stroke="#cfd0d6" stroke-width="1.4" stroke-linejoin="round"/>
-       <path d="M21 24h18M21 29h18M21 34h12" stroke="#c4c6ce" stroke-width="2" stroke-linecap="round"/>
-       <rect x="11" y="37" width="24" height="12" rx="3" fill="#e5484d"/><text x="23" y="46" text-anchor="middle" font-family="InterVariable, Inter, sans-serif" font-weight="800" font-size="8" fill="#fff">PDF</text>`,
-    ),
-  mail: () =>
-    iconSvg(
-      ["#5ac8ff", "#1475f0"],
-      `<rect x="11" y="17" width="38" height="27" rx="4.5" fill="#fff"/><path d="M12.5 19.5 30 33l17.5-13.5" stroke="#1d7cf2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`,
-    ),
-  linkedin: () =>
-    iconSvg(
-      ["#0a66c2"],
-      `<g transform="translate(12 11) scale(1.5)" fill="#fff"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452z"/></g>`,
       { flat: true },
     ),
   notes: () =>

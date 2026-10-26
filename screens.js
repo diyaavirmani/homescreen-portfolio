@@ -90,11 +90,6 @@ function contributionGrid(weeks, className) {
 }
 
 const TAB_ICONS = {
-  Home: "M4 11 12 4l8 7v9h-5v-6H9v6H4z",
-  Network: "M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 4.5a3.2 3.2 0 0 1 0 6.2M18 14.3c2 .8 3.4 2.9 3.4 5.7",
-  Post: "M5 4h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zM12 8v8M8 12h8",
-  Alerts: "M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20.5a2 2 0 0 0 4 0",
-  Jobs: "M4 8h16v11H4zM9 8V5.5h6V8M4 13h16",
   Today: "M5 4h14v16H5zM8 8h8M8 12h8M8 16h5",
   Games: "M7.5 8h9a4.5 4.5 0 0 1 0 9l-2-2h-5l-2 2a4.5 4.5 0 0 1 0-9zM8.5 10.5v3M7 12h3M15.5 11.5h.01M17 13.5h.01",
   Apps: "M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z",
@@ -120,7 +115,7 @@ SCREENS.github = () => {
   const languages = { "Scam Bait AI": "Python", FLOWITS: "Python", "Telecom Standards Assistant": "Python", Pancake: "TypeScript" };
   return `<div class="scr scr-github">
     ${statusBar("light")}
-    <div class="gh-nav"><span class="gh-back">${CHEVRON}</span><span>${PROFILE.githubUsername}</span><span class="gh-dots">•••</span></div>
+    <div class="gh-nav"><button class="gh-back js-back" aria-label="Back">${CHEVRON}</button><span>${PROFILE.githubUsername}</span><span class="gh-dots">•••</span></div>
     <div class="gh-profile">
       <img src="assets/img/portrait.webp" alt="" class="gh-avatar">
       <div><div class="gh-name">${PROFILE.name}</div><div class="gh-user">${PROFILE.githubUsername}</div></div>
@@ -167,7 +162,7 @@ SCREENS.music = () => `<div class="scr scr-music">
 
 SCREENS.photos = () => `<div class="scr scr-photos">
     ${statusBar("light")}
-    <div class="ph-nav"><span class="ph-back">${CHEVRON}</span><div class="ph-title"><b>New Delhi</b><span>Watercolour portrait</span></div><span class="ph-edit">Edit</span></div>
+    <div class="ph-nav"><button class="ph-back js-back" aria-label="Back">${CHEVRON}</button><div class="ph-title"><b>New Delhi</b><span>Watercolour portrait</span></div><span class="ph-edit">Edit</span></div>
     <div class="ph-stage"><img src="assets/img/portrait.webp" alt="Watercolour portrait of Diya Virmani"></div>
     <div class="ph-strip"><img src="assets/img/portrait.webp" alt=""></div>
     <div class="ph-tools">
@@ -194,6 +189,7 @@ SCREENS.maps = () => `<div class="scr scr-maps">
       </g>
     </svg>
     ${statusBar("dark")}
+    <button class="mp-back js-back" aria-label="Back">${CHEVRON}</button>
     <div class="mp-pin" style="left:96px;top:164px"><span>🎓</span></div>
     <div class="mp-pin-label" style="left:68px;top:202px">VIPS-TC</div>
     <div class="mp-card">
@@ -226,111 +222,12 @@ SCREENS.music.afterOpen = (root, isCancelled) => {
   tick();
 };
 
-SCREENS.terminal = () => `<div class="scr scr-terminal">
-    ${statusBar("light")}
-    <div class="tm-title">diya@delhi: ~</div>
-    <pre class="tm-body js-term"></pre>
-  </div>`;
-
-const TERMINAL_SCRIPT = [
-  { cmd: "whoami" },
-  { out: `${PROFILE.name}, developer` },
-  { cmd: "cat now.txt" },
-  { out: "learning: backend engineering\nhow:      from first principles" },
-  { cmd: "cat quote.txt" },
-  { out: `"${QUOTE.text}"\n  — ${QUOTE.author}` },
-  { cmd: "" },
-];
-
-SCREENS.terminal.afterOpen = (root, isCancelled) => {
-  const el = root.querySelector(".js-term");
-  const prompt = '<span class="tm-prompt">diya@delhi ~ %</span> ';
-  let html = "";
-  const render = (cursor = true) => (el.innerHTML = html + (cursor ? '<span class="tm-cursor"></span>' : ""));
-  (async () => {
-    for (const step of TERMINAL_SCRIPT) {
-      if (isCancelled()) return;
-      if ("cmd" in step) {
-        html += prompt;
-        render();
-        await wait(350);
-        for (const ch of step.cmd) {
-          if (isCancelled()) return;
-          html += escapeHtml(ch);
-          render();
-          await wait(45 + Math.random() * 40);
-        }
-        await wait(250);
-        if (step.cmd) html += "\n";
-      } else {
-        html += `<span class="tm-out">${escapeHtml(step.out)}</span>\n`;
-        render();
-        await wait(200);
-      }
-    }
-    render();
-  })();
-};
-
-SCREENS.resume = () => `<div class="scr scr-resume">
-    ${statusBar("dark")}
-    <div class="rs-nav"><span class="rs-done">Done</span><b>diya-resume.pdf</b><span class="rs-share"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-    <a class="rs-page" href="${PROFILE.resume}" target="_blank" rel="noopener"><img src="assets/img/resume-preview.jpg" alt="First page of Diya Virmani's résumé"></a>
-    <div class="rs-actions">
-      <a href="${PROFILE.resume}" target="_blank" rel="noopener" class="rs-btn rs-btn-primary">Open PDF</a>
-      <a href="${PROFILE.resume}" download="Diya-Virmani-Resume.pdf" class="rs-btn">Download</a>
-    </div>
-    <div class="rs-pages">Page 1 of 1</div>
-  </div>`;
-
-SCREENS.mail = () => {
-  const rows = ["qwertyuiop", "asdfghjkl", "zxcvbnm"];
-  return `<div class="scr scr-mail">
-    ${statusBar("dark")}
-    <div class="ml-top"><span class="ml-cancel">Cancel</span>
-      <a class="ml-send" href="mailto:${PROFILE.email}?subject=${encodeURIComponent("Hi Diya")}" aria-label="Send an email to Diya"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-    </div>
-    <h2 class="ml-title">New Message</h2>
-    <div class="ml-field"><span>To:</span><a class="ml-chip" href="mailto:${PROFILE.email}">${PROFILE.name}</a></div>
-    <div class="ml-field"><span>Cc/Bcc, From:</span><em>you@example.com</em></div>
-    <div class="ml-field"><span>Subject:</span><b>Hi Diya</b></div>
-    <div class="ml-body">Hi Diya,<br><br>I saw your portfolio and<span class="ml-caret"></span></div>
-    <div class="ml-addr">${PROFILE.email}</div>
-    <div class="kb">
-      ${rows.map((r, i) => `<div class="kb-row kb-row-${i}">${i === 2 ? '<b class="kb-k kb-wide">⇧</b>' : ""}${[...r].map((k) => `<b class="kb-k">${k}</b>`).join("")}${i === 2 ? '<b class="kb-k kb-wide">⌫</b>' : ""}</div>`).join("")}
-      <div class="kb-row"><b class="kb-k kb-wide">123</b><b class="kb-k kb-space">space</b><b class="kb-k kb-wide">return</b></div>
-    </div>
-  </div>`;
-};
-
-SCREENS.linkedin = () => `<div class="scr scr-linkedin">
-    ${statusBar("dark")}
-    <div class="li-top"><img src="assets/img/portrait.webp" alt=""><span class="li-search"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m11 11 3.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>${PROFILE.name}</span></div>
-    <div class="li-banner"></div>
-    <div class="li-card">
-      <img src="assets/img/portrait.webp" alt="" class="li-avatar">
-      <div class="li-name">${PROFILE.name}</div>
-      <div class="li-headline">${PROFILE.headline}</div>
-      <div class="li-meta">${PROFILE.location} · <span>Contact info</span></div>
-      <div class="li-school"><span>V</span>${PROFILE.education.short} · B.Tech AI & Data Science</div>
-      <div class="li-buttons"><a href="${PROFILE.linkedin}" target="_blank" rel="noopener" class="li-btn li-btn-primary">Connect</a><a href="${PROFILE.linkedin}" target="_blank" rel="noopener" class="li-btn">View profile</a></div>
-    </div>
-    <div class="li-section">
-      <div class="li-section-title">Experience</div>
-      ${FOLDERS.work.items
-        .slice(0, 3)
-        .map((w) => `<div class="li-exp">${iconHtml(w, "li-exp-logo")}<div><b>${escapeHtml(w.role)}</b><span>${escapeHtml(w.name)}</span><em>${w.dates}</em></div></div>`)
-        .join("")}
-    </div>
-    ${tabBar("li-tabs", ["Home", "Network", "Post", "Alerts", "Jobs"], "Home")}
-  </div>`;
-
 SCREENS.notes = () => {
   const today = nowInDelhi().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
   const hobbies = ["The gym", "Books", "Fictional worlds", "Hobbies I'm picking back up"];
   return `<div class="scr scr-notes">
     ${statusBar("dark")}
-    <div class="nt-nav"><span class="nt-back">${CHEVRON}Notes</span><span class="nt-icons">
+    <div class="nt-nav"><button class="nt-back js-back">${CHEVRON}Notes</button><span class="nt-icons">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="8" cy="12" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="16" cy="12" r="1.2" fill="currentColor"/></svg>
     </span></div>
@@ -348,11 +245,13 @@ const FOLDER_SCREENS = {};
 
 FOLDER_SCREENS.projects = (p) => `<div class="scr scr-store">
     ${statusBar("dark")}
-    <div class="st-nav">${CHEVRON}<span>Projects</span></div>
+    <button class="st-nav js-back">${CHEVRON}<span>Projects</span></button>
     <div class="st-head">
-      ${iconHtml(p, "st-icon")}
+      <a class="st-icon-link" href="${p.href}" target="_blank" rel="noopener" title="Open ${escapeHtml(p.name)} on GitHub" aria-label="${escapeHtml(p.name)} on GitHub">
+        ${iconHtml(p, "st-icon")}<span class="st-icon-badge"><img src="assets/icons/github.svg" alt=""></span>
+      </a>
       <div class="st-head-text">
-        <div class="st-name">${escapeHtml(p.name)}</div>
+        <div class="st-name ${p.name.length > 20 ? "is-long" : ""}">${escapeHtml(p.name)}</div>
         <div class="st-area">${escapeHtml(p.area)}</div>
         <div class="st-get"><a href="${p.href}" target="_blank" rel="noopener" class="st-view">VIEW</a>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -370,10 +269,11 @@ FOLDER_SCREENS.projects = (p) => `<div class="scr scr-store">
   </div>`;
 
 FOLDER_SCREENS.work = (w) => {
+  if (w.kind === "opensource") return openSourceScreen();
   const link = w.href ? `<a class="wl-link" href="${w.href}" target="_blank" rel="noopener">${w.href.replace("https://", "")}</a>` : "";
   return `<div class="scr scr-wallet">
     ${statusBar("light")}
-    <div class="wl-nav"><span>Done</span><span class="wl-dots">•••</span></div>
+    <div class="wl-nav"><button class="js-back">Done</button><span class="wl-dots">•••</span></div>
     <div class="wl-pass" style="background:linear-gradient(160deg, ${w.passColor[0]}, ${w.passColor[1]})">
       <div class="wl-pass-top">${iconHtml(w, "wl-logo")}<b>${escapeHtml(w.name)}</b></div>
       <div class="wl-field wl-role"><span>ROLE</span>${escapeHtml(w.role)}</div>
@@ -392,7 +292,7 @@ FOLDER_SCREENS.wins = (w, index) => {
   const all = FOLDERS.wins.items;
   return `<div class="scr scr-wins">
     ${statusBar("light")}
-    <div class="wn-top">Achievements</div>
+    <div class="wn-top"><button class="wn-back js-back">${CHEVRON}Wins</button>Achievements</div>
     <div class="wn-confetti">${Array.from({ length: 18 }, (_, i) => `<i style="--i:${i}"></i>`).join("")}</div>
     <div class="wn-medal">${iconHtml(w, "wn-icon")}</div>
     <div class="wn-kicker">ACHIEVEMENT UNLOCKED</div>
@@ -405,11 +305,94 @@ FOLDER_SCREENS.wins = (w, index) => {
   </div>`;
 };
 
+// ---------- Open Source (pull requests, styled after srbh.site's list) ----------
+
+const GITHUB_SEARCH = `https://github.com/search?q=${encodeURIComponent(OPEN_SOURCE.query)}&type=pullrequests&s=created&o=desc`;
+
+let openSourcePRs = OPEN_SOURCE.prs.map(([title, repo, number, state, date]) => ({
+  title,
+  repo,
+  url: `https://github.com/${repo}/pull/${number}`,
+  state,
+  date,
+}));
+let openSourceRequest = null;
+
+// One live request per page load; GitHub allows a few unauthenticated searches a minute.
+function refreshOpenSource() {
+  openSourceRequest ??= fetch(`https://api.github.com/search/issues?q=${encodeURIComponent(OPEN_SOURCE.query)}&sort=created&order=desc&per_page=100`, {
+    headers: { Accept: "application/vnd.github+json" },
+  })
+    .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
+    .then((data) => {
+      if (!Array.isArray(data.items) || !data.items.length) return false;
+      openSourcePRs = data.items.map((item) => ({
+        title: item.title,
+        repo: item.repository_url.replace("https://api.github.com/repos/", ""),
+        url: item.html_url,
+        state: item.pull_request?.merged_at ? "merged" : item.state,
+        date: item.created_at.slice(0, 10),
+      }));
+      return true;
+    })
+    .catch(() => false);
+  return openSourceRequest;
+}
+
+const PR_ICONS = {
+  merged: '<circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/>',
+  open: '<circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7M6 9v12"/>',
+  closed: '<circle cx="6" cy="6" r="3"/><path d="M6 9v12M21 3l-6 6M21 9l-6-6M18 11.5V15"/><circle cx="18" cy="18" r="3"/>',
+};
+
+const lineIcon = (paths) =>
+  `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
+
+function openSourceStats() {
+  const count = (state) => openSourcePRs.filter((pr) => pr.state === state).length;
+  return `${count("merged")} merged · ${count("open")} open · ${new Set(openSourcePRs.map((pr) => pr.repo)).size} repos`;
+}
+
+function openSourceRows() {
+  return openSourcePRs
+    .map((pr) => {
+      const month = new Date(`${pr.date}T00:00:00`).toLocaleDateString("en-US", { month: "short", year: "numeric" });
+      return `<a class="os-pr" href="${pr.url}" target="_blank" rel="noopener">
+        <span class="os-ic os-${pr.state}" title="${pr.state}">${lineIcon(PR_ICONS[pr.state] || PR_ICONS.open)}</span>
+        <span class="os-text"><b>${escapeHtml(pr.title)}</b><em><span>${escapeHtml(pr.repo)}</span><span>&nbsp;• ${month}</span></em></span>
+        <span class="os-go">${lineIcon('<path d="M7 7h10v10M7 17 17 7"/>')}</span>
+      </a>`;
+    })
+    .join("");
+}
+
+function openSourceScreen() {
+  return `<div class="scr scr-oss">
+    ${statusBar("light")}
+    <button class="os-back js-back">${CHEVRON}Work</button>
+    <div class="os-head">
+      <h2>Recent Pull Requests</h2>
+      <a class="os-all" href="${GITHUB_SEARCH}" target="_blank" rel="noopener">View all <span>${lineIcon('<path d="M5 12h14M12 5l7 7-7 7"/>')}</span></a>
+    </div>
+    <div class="os-stats js-os-stats">${openSourceStats()}</div>
+    <div class="os-list js-os-list">${openSourceRows()}</div>
+  </div>`;
+}
+
+FOLDER_SCREENS.work.afterOpen = (root, isCancelled, item) => {
+  if (item.kind !== "opensource") return;
+  refreshOpenSource().then((updated) => {
+    if (!updated || isCancelled()) return;
+    root.querySelector(".js-os-stats").textContent = openSourceStats();
+    root.querySelector(".js-os-list").innerHTML = openSourceRows();
+  });
+};
+
 const SETTINGS_COLORS = ["#ff3b30", "#ff9500", "#ffcc00", "#34c759", "#00c7be", "#30b0c7", "#32ade6", "#007aff", "#5856d6", "#af52de", "#ff2d55", "#a2845e"];
 
 FOLDER_SCREENS.stack = (s) => `<div class="scr scr-settings ${s.skills.length > 10 ? "is-compact" : ""}">
     ${statusBar("dark")}
-    <div class="se-nav">${CHEVRON}<span>Stack</span></div>
+    <button class="se-nav js-back">${CHEVRON}<span>Stack</span></button>
     <h2 class="se-title">${escapeHtml(s.name)}</h2>
     <div class="se-group">${s.skills
       .map(
